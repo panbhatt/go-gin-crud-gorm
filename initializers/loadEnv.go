@@ -1,9 +1,13 @@
 package initializers
 
-import "github.com/spf13/viper"
+import (
+	"fmt"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
-	DBHhost    string `mapstructure:"POSTGRES_HOST"`
+	DBHost     string `mapstructure:"POSTGRES_HOST"`
 	DBUser     string `mapstructure:"POSTGRES_USER"`
 	DBPassword string `mapstructure:"POSTGRES_PASSWORD"`
 	DBName     string `mapstructure:"POSTGRES_DB"`
@@ -25,6 +29,7 @@ func LoadConfig(path string) (config Config, err error) {
 	}
 
 	err = viper.Unmarshal(&config)
+	fmt.Printf("%+v \n ", config)
 	return
 
 }
