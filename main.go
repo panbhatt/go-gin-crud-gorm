@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/panbhatt/go-gin-crud-gorm/initializers"
+	"github.com/panbhatt/go-gin-crud-gorm/routes"
 )
 
 var (
@@ -36,6 +37,11 @@ func main() {
 		ctx.JSON(http.StatusOK, gin.H{"status": "Ok", "message": "Welcome to Golang with GORM and Postgres"})
 
 	})
+
+	// Starting with the controller Group
+	routes.AddRoutes(apiRouter, config)
+
+	fmt.Println("Routes: \n %v", server.Routes())
 
 	log.Fatal(server.Run(":" + config.ServerPort))
 
