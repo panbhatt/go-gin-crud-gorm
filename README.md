@@ -3,3 +3,6 @@
 ## Install AIR : go install github.com/cosmtrek/air@latest
 ### $(go env GOPATH)/bin/air
 ### OR alias air='$(go env GOPATH)/bin/air'
+
+
+## LINK : https://codevoweb.com/setup-golang-gorm-restful-api-project-with-postgres/ 

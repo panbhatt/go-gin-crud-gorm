@@ -33,7 +33,7 @@ func main() {
 	apiRouter := server.Group("/api")
 
 	apiRouter.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"status": "Health is ok "})
+		ctx.JSON(http.StatusOK, gin.H{"status": "Ok", "message": "Welcome to Golang with GORM and Postgres"})
 
 	})
 
