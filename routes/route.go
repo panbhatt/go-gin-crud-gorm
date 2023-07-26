@@ -12,5 +12,6 @@ func AddRoutes(rg *gin.RouterGroup, config initializers.Config) {
 
 	authController := ctrl.NewAuthController(initializers.DB)
 	router.POST("/register", authController.SignUpUser)
+	router.POST("/login", authController.SignInUser)
 
 }

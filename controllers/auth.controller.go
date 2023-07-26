@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/panbhatt/go-gin-crud-gorm/initializers"
 	"github.com/panbhatt/go-gin-crud-gorm/models"
 	"github.com/panbhatt/go-gin-crud-gorm/utils"
 	"gorm.io/gorm"
@@ -77,4 +78,42 @@ func (ac *AuthController) SignUpUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "data": gin.H{"user": userResponse}})
 	return
+}
+
+func (ac *AuthController) SignInUser(ctx *gin.Context) {
+
+	var payload *models.SignInInput
+
+	if err := ctx.ShouldBindJSON(&payload); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+		return
+	}
+
+	var user models.User
+	result := ac.DB.First(&user, "email = ?", strings.ToLower(payload.Email))
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid Email", "error": result.Error})
+		return
+	}
+
+	if err := utils.VerifyPassword(user.Password, payload.Password); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Password does not match", "error": err.Error()})
+		return
+	}
+
+	// Generate Token.
+	var configObj = initializers.CO
+	access_token, err := utils.CreateToken(configObj.AccessTokenExpiredIn, user.ID, configObj.AccessTokenPrivateKey)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+		return
+	}
+
+	refresh_token, err := utils.CreateToken(configObj.RefreshTokenExpiredIn, user.ID, configObj.RefreshTokenPrivateKey)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "ok", "data": gin.H{"access_token": access_token, "refresh_tokeN": refresh_token}})
+
 }
