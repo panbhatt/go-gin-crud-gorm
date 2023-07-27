@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/panbhatt/go-gin-crud-gorm/initializers"
 	"github.com/panbhatt/go-gin-crud-gorm/routes"
@@ -31,6 +32,12 @@ func main() {
 
 	fmt.Println("===============Starting GIN things now================")
 	server = gin.Default()
+
+	// setting all the CORS specific thing.
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost:3000", config.ClientOrigin}
+	corsConfig.AllowCredentials = true
+
 	apiRouter := server.Group("/api")
 
 	apiRouter.GET("/health", func(ctx *gin.Context) {
