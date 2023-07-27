@@ -51,7 +51,7 @@ func VerifyToken(token string, publicKey string) (any, error) {
 	}
 
 	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodRSA); ok {
+		if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
 			return nil, fmt.Errorf("unexpected method %s", t.Header["alg"])
 		}
 		return key, nil

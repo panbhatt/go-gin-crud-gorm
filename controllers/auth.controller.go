@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -115,5 +116,39 @@ func (ac *AuthController) SignInUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "ok", "data": gin.H{"access_token": access_token, "refresh_tokeN": refresh_token}})
+
+}
+
+func (ac *AuthController) RefreshAccessToken(ctx *gin.Context) {
+
+	refreshTokenCookie, err := ctx.Cookie("refresh_token")
+	fmt.Println("REFRESHTOKEN", refreshTokenCookie)
+	var configObj = initializers.CO
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Refresh Token Cookie not present."})
+		return
+	}
+
+	sub, err := utils.VerifyToken(refreshTokenCookie, configObj.RefreshTokenPublicKey)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Refresh Token is invalid - " + err.Error()})
+		return
+	}
+
+	var user models.User
+	result := ac.DB.First(&user, "id = ?", fmt.Sprint(sub))
+	if result.Error != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "User does not exists "})
+		return
+	}
+
+	access_token, err := utils.CreateToken(configObj.AccessTokenExpiredIn, user.ID, configObj.AccessTokenPrivateKey)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "An Error occurred, while creating the Token"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "ok", "data": gin.H{"access_token": access_token}})
 
 }
