@@ -6,3 +6,5 @@
 
 
 ## LINK : https://codevoweb.com/setup-golang-gorm-restful-api-project-with-postgres/ 
+
+## for Migration run -> go run migrate/migrate.go 
