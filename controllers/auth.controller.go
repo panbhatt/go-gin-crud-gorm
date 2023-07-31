@@ -152,3 +152,10 @@ func (ac *AuthController) RefreshAccessToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"status": "ok", "data": gin.H{"access_token": access_token}})
 
 }
+
+func (ac *AuthController) Logout(ctx *gin.Context) {
+	ctx.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	ctx.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+}
