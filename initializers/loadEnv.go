@@ -26,6 +26,12 @@ type Config struct {
 	RefreshTokenPublicKey  string        `mapstructure:"REFRESH_TOKEN_PUBLIC_KEY"`
 	RefreshTokenExpiredIn  time.Duration `mapstructure:"REFRESH_TOKEN_EXPIRED_IN"`
 	RefreshTokenMaxAge     int           `mapstructure:"REFRESH_TOKEN_MAXAGE"`
+
+	EmailFrom string `mapstructure:"EMAIL_FROM"`
+	SMTPHost  string `mapstructure:"SMTP_HOST"`
+	SMTPPass  string `mapstructure:"SMTP_PASS"`
+	SMTPPort  int    `mapstructure:"SMTP_PORT"`
+	SMTPUser  string `mapstructure:"SMTP_USER"`
 }
 
 var CO Config
