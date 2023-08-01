@@ -73,7 +73,7 @@ func SendEmail(user *models.User, data *EmailData) {
 	m.AddAlternative("text/plain", html2text.HTML2Text(body.String()))
 
 	d := gomail.NewDialer(smtpHost, smtpPort, smtpUser, smtpPassword)
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: false}
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	// Send Email
 	if err := d.DialAndSend(m); err != nil {

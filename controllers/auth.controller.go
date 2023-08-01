@@ -10,6 +10,7 @@ import (
 	"github.com/panbhatt/go-gin-crud-gorm/initializers"
 	"github.com/panbhatt/go-gin-crud-gorm/models"
 	"github.com/panbhatt/go-gin-crud-gorm/utils"
+	"github.com/thanhpk/randstr"
 	"gorm.io/gorm"
 )
 
@@ -77,8 +78,30 @@ func (ac *AuthController) SignUpUser(ctx *gin.Context) {
 		UpdatedAt: newUser.UpdatedAt,
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "data": gin.H{"user": userResponse}})
-	return
+	// Now Start sending email.
+	code := randstr.String(20)
+	verificationCode := utils.Encode(code)
+
+	newUser.VerificationCode = verificationCode
+
+	ac.DB.Save(newUser)
+
+	var firstName = newUser.Name
+	if strings.Contains(firstName, " ") {
+		firstName = strings.Split(firstName, " ")[0]
+	}
+
+	configObj := initializers.CO
+	emailData := utils.EmailData{
+		URL:       configObj.ClientOrigin + "/verifyemail/" + code,
+		FirstName: firstName,
+		Subject:   "Your Account Verification Code",
+	}
+
+	utils.SendEmail(&newUser, &emailData)
+
+	ctx.JSON(http.StatusCreated, gin.H{"status": "success", "data": gin.H{"user": userResponse, "email": "An Email has been sent to " + newUser.Email}})
+
 }
 
 func (ac *AuthController) SignInUser(ctx *gin.Context) {
