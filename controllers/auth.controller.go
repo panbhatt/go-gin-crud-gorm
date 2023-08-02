@@ -182,3 +182,28 @@ func (ac *AuthController) Logout(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
 }
+
+func (ac *AuthController) VerifyEmail(ctx *gin.Context) {
+
+	vCode := ctx.Params.ByName("verificationCode")
+	vCode = utils.Encode(vCode)
+
+	var updatedUser models.User
+	result := ac.DB.First(&updatedUser, "verification_code =?", vCode)
+	if result.Error != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid verification code"})
+		return
+	}
+
+	if updatedUser.Verified {
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "User already verified."})
+		return
+	}
+
+	updatedUser.Verified = true
+	ac.DB.Save(&updatedUser)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "message", "message": "Email has been verified"})
+	return
+
+}

@@ -17,6 +17,7 @@ func AddRoutes(rg *gin.RouterGroup, config initializers.Config) {
 	router.POST("/login", authController.SignInUser)
 	router.GET("/refresh", authController.RefreshAccessToken)
 	router.GET("/logout", middleware.DeserializeUser(), authController.Logout)
+	router.GET("/verifyemail/:verificationCode", authController.VerifyEmail)
 
 	userRouter := rg.Group("/users")
 	userController := ctrl.NewUserController(initializers.DB)
