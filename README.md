@@ -8,3 +8,7 @@
 ## LINK : https://codevoweb.com/setup-golang-gorm-restful-api-project-with-postgres/ 
 
 ## for Migration run -> go run migrate/migrate.go 
+
+# PROTO Related thing: [ https://codevoweb.com/golang-grpc-server-and-client-signup-user-verify-email ]
+## Install PROTO COMpiler : 
+### apt install -y protobuf-compiler [ https://grpc.io/docs/protoc-installation/]
