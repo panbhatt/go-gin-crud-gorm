@@ -11,4 +11,16 @@
 
 # PROTO Related thing: [ https://codevoweb.com/golang-grpc-server-and-client-signup-user-verify-email ]
 ## Install PROTO COMpiler : 
-### apt install -y protobuf-compiler [ https://grpc.io/docs/protoc-installation/]
+### apt install -y protobuf-compiler & sudo apt install golang-goprotobuf-dev [ https://grpc.io/docs/protoc-installation/]
+``````
+go get google.golang.org/protobuf/cmd/protoc-gen-go
+go get github.com/golang/protobuf
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+export PATH="$PATH:$(go env GOPATH)/bin"
+
+   sudo snap install protobuf or sudo apt  install protobuf-compiler
+
+``````
